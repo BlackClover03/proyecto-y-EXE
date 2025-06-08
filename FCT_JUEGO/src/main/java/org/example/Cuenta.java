@@ -4,7 +4,15 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import java.util.ArrayList;
 
+/**
+ * Clase que representa la cuenta de un jugador.
+ *
+ * Contiene información sobre el nombre del jugador, su cantidad de moneda del juego (conchas caparazón),
+ * el personaje asociado, las armas y objetos que ha obtenido, así como las armas y objetos actualmente seleccionados.
+ */
 public class Cuenta {
+
+    // Atributos
     String nombre;
     IntegerProperty cantidad_concha_caparazon = new SimpleIntegerProperty(10000);
     private Personaje personaje;
@@ -13,6 +21,11 @@ public class Cuenta {
     private String armaSeleccionada;
     private String objetoSeleccionado;
 
+    /**
+     * Constructor que crea una cuenta con un nombre y un personaje por defecto.
+     *
+     * @param nombre Nombre del jugador
+     */
     public Cuenta(String nombre) {
         this.nombre = nombre;
         this.personaje = new Personaje();
@@ -20,6 +33,7 @@ public class Cuenta {
         this.objetosObtenidos = new ArrayList<>();
     }
 
+    // Getters
     public Personaje getPersonaje() {
         return personaje;
     }
@@ -41,6 +55,8 @@ public class Cuenta {
     public String getObjetoSeleccionado() {
         return objetoSeleccionado;
     }
+
+    // Setters
     public void setPersonaje(Personaje personaje) {
         this.personaje = personaje;
     }
@@ -63,6 +79,15 @@ public class Cuenta {
         this.objetoSeleccionado = objetoSeleccionado;
     }
 
+    // Métodos de lógica
+
+    /**
+     * Intenta comprar un arma.
+     * Si el jugador tiene suficiente dinero, se descuenta el coste y se añade al inventario.
+     *
+     * @param arma Arma que se desea comprar
+     * @return true si la compra fue exitosa, false si no hay suficiente dinero
+     */
     public boolean comprarArma(Arma arma) {
         if (cantidad_concha_caparazon.get() >= arma.getCoste()) {
             armasObtenidas.add(arma);
@@ -74,6 +99,13 @@ public class Cuenta {
         return false;
     }
 
+    /**
+     * Intenta comprar un objeto.
+     * Si el jugador tiene suficiente dinero, se descuenta el coste y se añade al inventario.
+     *
+     * @param objeto Objeto que se desea comprar
+     * @return true si la compra fue exitosa, false si no hay suficiente dinero
+     */
     public boolean comprarObjeto(Objeto objeto) {
         if (cantidad_concha_caparazon.get() >= objeto.getCoste()) {
             objetosObtenidos.add(objeto);
@@ -85,6 +117,11 @@ public class Cuenta {
         return false;
     }
 
+    /**
+     * Devuelve el objeto `Arma` correspondiente al nombre del arma seleccionada.
+     *
+     * @return Objeto `Arma` actualmente seleccionado, o null si no se encuentra
+     */
     public Arma getArmaSeleccionadaObjeto() {
         for (Arma a : armasObtenidas) {
             if (a.getNombre().equals(armaSeleccionada)) {
@@ -94,6 +131,11 @@ public class Cuenta {
         return null;
     }
 
+    /**
+     * Devuelve el objeto `Objeto` correspondiente al nombre del objeto seleccionado.
+     *
+     * @return Objeto `Objeto` actualmente seleccionado, o null si no se encuentra
+     */
     public Objeto getObjetoSeleccionadoObjeto() {
         for (Objeto o : objetosObtenidos) {
             if (o.getNombre().equals(objetoSeleccionado)) {

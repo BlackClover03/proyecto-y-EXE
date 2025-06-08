@@ -10,8 +10,18 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Controlador de la pantalla inicial del juego.
+ * Permite al usuario comenzar una nueva partida.
+ */
 public class PantallaInicial {
 
+    /**
+     * Método llamado al presionar el botón "Nueva Partida".
+     * Cambia a la pantalla de explicación usando la clase GestionarMoverse.
+     *
+     * @param event Evento del botón presionado.
+     */
     @FXML
     private void nuevaPartida(ActionEvent event) throws IOException {
         try {

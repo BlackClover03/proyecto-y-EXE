@@ -11,31 +11,54 @@ import javafx.scene.control.TextArea;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controlador de la interfaz de tienda del juego.
+ * Permite al usuario comprar armas y objetos, y gestionar la visibilidad de los botones
+ * según el estado de compra. También permite cambiar de escena hacia otras pantallas.
+ */
 public class Pantalla3 {
 
+    /**
+     * Cambia la escena a la pantalla de inicio.
+     *
+     * @param event Evento que dispara el cambio de pantalla.
+     */
     @FXML
     public void irAInicio(ActionEvent event) {
         GestionarMoverse.cambiarEscena(event, "/org/example/Pantalla1.fxml", "Pantalla Inicio");
     }
 
+    /**
+     * Cambia la escena a la pantalla de inventario.
+     *
+     * @param event Evento que dispara el cambio de pantalla.
+     */
     @FXML
     public void irAInventario(ActionEvent event) {
         GestionarMoverse.cambiarEscena(event, "/org/example/Pantalla2.fxml", "Pantalla de Inventario");
     }
 
+    /** Mapa de armas disponibles en la tienda. */
     private static Map<String, Arma> armas;
+
+    /** Mapa de objetos disponibles en la tienda. */
     private static Map<String, Objeto> objetos;
 
+    // Botones de armas
     @FXML private Button botonAdquirirEspadon;
     @FXML private Button botonAdquirirEspada;
     @FXML private Button botonAdquirirPistola;
     @FXML private Button botonAdquirirGuantes;
     @FXML private Button botonAdquirirRectificador;
+
+    // Botones de objetos
     @FXML private Button botonAdquirirObjeto1;
     @FXML private Button botonAdquirirObjeto2;
     @FXML private Button botonAdquirirObjeto3;
     @FXML private Button botonAdquirirObjeto4;
     @FXML private Button botonAdquirirObjeto5;
+
+    // Áreas de texto para mostrar estadísticas
     @FXML private TextArea Estadisticas_Espadon;
     @FXML private TextArea Estadisticas_Espada;
     @FXML private TextArea Estadisticas_Pistola;
@@ -46,6 +69,8 @@ public class Pantalla3 {
     @FXML private TextArea Estadisticas_Objeto3;
     @FXML private TextArea Estadisticas_Objeto4;
     @FXML private TextArea Estadisticas_Objeto5;
+
+    /** Etiqueta para mostrar la cantidad actual de dinero del usuario. */
     @FXML private Label label_dineroActual;
     @FXML private void botonAdquirirEspadon(ActionEvent event) {
         comprarArma("Arma1");
@@ -78,8 +103,13 @@ public class Pantalla3 {
         comprarObjeto("Objeto5");
     }
 
+    /** Referencia a la cuenta del usuario actual. */
     private Cuenta cuentaUsuario = Pantalla1.getCuentaUsuario();
 
+    /**
+     * Inicializa la pantalla de tienda, carga armas y objetos,
+     * actualiza estadísticas y oculta botones de elementos ya comprados.
+     */
     @FXML
     public void initialize(){
         inicializarTienda();
@@ -88,11 +118,17 @@ public class Pantalla3 {
         label_dineroActual.textProperty().bind(Bindings.format("%, d", cuentaUsuario.getCantidad_concha_caparazon()));
     }
 
+    /**
+     * Inicializa armas y objetos de la tienda.
+     */
     private void inicializarTienda(){
         inicializarArmas();
         inicializarObjetos();
     }
 
+    /**
+     * Inicializa el mapa de objetos disponibles.
+     */
     private void inicializarObjetos(){
         objetos = new HashMap<>();
         objetos.put("Objeto1", new Objeto("Objeto1", 800, 15000, 500, 10000));
@@ -102,6 +138,9 @@ public class Pantalla3 {
         objetos.put("Objeto5", new Objeto("Objeto5", 2500, 3000, 5000, 18000));
     }
 
+    /**
+     * Inicializa el mapa de armas disponibles.
+     */
     private void inicializarArmas(){
         armas = new HashMap<>();
         armas.put("Arma1", new Arma("Arma1", 5000, 2000, 300, 18000));
@@ -111,6 +150,9 @@ public class Pantalla3 {
         armas.put("Arma5", new Arma("Arma5", 900, 15000, 2000, 17000));
     }
 
+    /**
+     * Asigna las estadísticas de armas y objetos a los TextArea correspondientes.
+     */
     private void asignarEstadisticas(){
         Estadisticas_Espadon.setText(armas.get("Arma1").obtenerEstadisticas());
         Estadisticas_Espada.setText(armas.get("Arma2").obtenerEstadisticas());
@@ -124,6 +166,12 @@ public class Pantalla3 {
         Estadisticas_Objeto5.setText(objetos.get("Objeto5").obtenerEstadisticas());
     }
 
+    /**
+     * Muestra un mensaje informativo al usuario.
+     *
+     * @param titulo   Título de la ventana.
+     * @param contenido Mensaje a mostrar.
+     */
     private void mostrarMensaje(String titulo, String contenido) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -132,6 +180,11 @@ public class Pantalla3 {
         alert.showAndWait();
     }
 
+    /**
+     * Intenta comprar un arma determinada y muestra un mensaje de éxito o fallo.
+     *
+     * @param nombreArma Nombre clave del arma a comprar.
+     */
     private void comprarArma(String nombreArma) {
         Arma arma = armas.get(nombreArma);
         if (arma != null) {
@@ -146,6 +199,11 @@ public class Pantalla3 {
         }
     }
 
+    /**
+     * Oculta el botón correspondiente al arma adquirida y marca su área de estadísticas.
+     *
+     * @param nombreArma Nombre clave del arma.
+     */
     private void ocultarBotonArma(String nombreArma) {
         switch (nombreArma) {
             case "Arma1": botonAdquirirEspadon.setVisible(false); Estadisticas_Espadon.setText("ADQUIRIDO"); break;
@@ -156,6 +214,11 @@ public class Pantalla3 {
         }
     }
 
+    /**
+     * Intenta comprar un objeto determinado. Muestra mensaje de éxito o fallo.
+     *
+     * @param nombreObjeto Nombre clave del objeto a comprar.
+     */
     private void comprarObjeto(String nombreObjeto) {
         Objeto objeto = objetos.get(nombreObjeto);
         if (objeto != null) {
@@ -170,6 +233,11 @@ public class Pantalla3 {
         }
     }
 
+    /**
+     * Oculta el botón correspondiente al objeto adquirido y marca su área de estadísticas.
+     *
+     * @param nombreObjeto Nombre clave del objeto.
+     */
     private void ocultarBotonObjeto(String nombreObjeto) {
         switch (nombreObjeto) {
             case "Objeto1": botonAdquirirObjeto1.setVisible(false); Estadisticas_Objeto1.setText("ADQUIRIDO"); break;
@@ -180,6 +248,10 @@ public class Pantalla3 {
         }
     }
 
+    /**
+     * Recorre las armas y objetos ya obtenidos por el usuario,
+     * y oculta los botones correspondientes en la interfaz.
+     */
     private void ocultarBotonesComprados() {
         for (Arma arma : cuentaUsuario.getArmasObtenidas()) {
             switch (arma.getNombre()) {

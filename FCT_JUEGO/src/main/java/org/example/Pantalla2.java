@@ -7,18 +7,33 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 
+/**
+ * Clase {@code Pantalla2} controladora de la pantalla de Inventario.
+ *
+ * Permite al usuario visualizar y seleccionar armas y objetos equipables,
+ * y muestra las estadísticas actualizadas del personaje.
+ */
 public class Pantalla2 {
 
+    /**
+     * Cambia la escena a la pantalla de inicio.
+     * @param event Evento que desencadena el cambio.
+     */
     @FXML
     public void irAInicio(ActionEvent event) {
         GestionarMoverse.cambiarEscena(event, "/org/example/Pantalla1.fxml", "Pantalla Inicio");
     }
 
+    /**
+     * Cambia la escena a la pantalla de tienda.
+     * @param event Evento que desencadena el cambio.
+     */
     @FXML
     public void irATienda(ActionEvent event) {
         GestionarMoverse.cambiarEscena(event, "/org/example/Pantalla3.fxml", "Pantalla de la Tienda");
     }
 
+    //Elementos del fxml traducidos al controlador para usarse
     @FXML private Label label_nombre;
     @FXML private TextArea Estadisticas_personaje;
     @FXML private ComboBox<String> selectorArma;
@@ -26,8 +41,20 @@ public class Pantalla2 {
     @FXML private ImageView Plantilla_Arma;
     @FXML private ImageView Plantilla_Objeto;
 
+    /**
+     * Cuenta del usuario actual.
+     */
     Cuenta cuenta = Pantalla1.getCuentaUsuario();
+
+    /**
+     * Personaje del usuario actual.
+     */
     Personaje personaje = cuenta.getPersonaje();
+
+    /**
+     * Inicializa la interfaz al cargar la pantalla.
+     * Configura nombre, estadísticas, selectores e imágenes.
+     */
     @FXML
     private void initialize() {
         label_nombre.setText(Pantalla1.getCuentaUsuario().getNombre());
@@ -37,6 +64,9 @@ public class Pantalla2 {
         actualizarEstadisticasConEquipo();
     }
 
+    /**
+     * Muestra las estadísticas base del personaje sin equipo aplicado.
+     */
     public void inicializar_estadisticas_base(){
         if (personaje != null) {
             Estadisticas_personaje.setText("ESTADÍSTICAS TOTALES\n" +
@@ -46,6 +76,10 @@ public class Pantalla2 {
         }
     }
 
+    /**
+     * Inicializa los ComboBox con las armas y objetos obtenidos por el usuario.
+     * También selecciona y muestra el equipo actualmente guardado.
+     */
     public void inicializar_selectores(){
         selectorArma.getItems().add("Ninguna");
         for (Arma arma : cuenta.getArmasObtenidas()) {
@@ -74,6 +108,10 @@ public class Pantalla2 {
 
     }
 
+    /**
+     * Configura las acciones a realizar cuando el usuario selecciona un arma u objeto.
+     * Al cambiar la selección, actualiza la imagen y las estadísticas.
+     */
     public void configurar_selectores() {
         selectorArma.setOnAction(event -> {
             String armaSeleccionada = selectorArma.getValue();
@@ -100,6 +138,10 @@ public class Pantalla2 {
         });
     }
 
+    /**
+     * Actualiza las estadísticas del personaje sumando los valores del arma y objeto seleccionados.
+     * Muestra el resultado en el TextArea correspondiente.
+     */
     public void actualizarEstadisticasConEquipo() {
         int ataqueTotal = personaje.getAtaque();
         int defensaTotal = personaje.getDefensa();

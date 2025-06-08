@@ -16,6 +16,14 @@ import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * Controlador de la Pantalla4 del juego.
+ * Gestiona el combate por turnos entre el personaje del jugador y un enemigo,
+ * incluyendo ataques, habilidades, turnos, recompensas y transición entre pantallas.
+ *
+ * Esta clase carga las estadísticas del jugador y del enemigo, administra la interfaz gráfica
+ * y la lógica de combate, así como la gestión de recompensas al finalizar cada sala.
+ */
 public class Pantalla4 {
     private Cuenta cuentaUsuario = Pantalla1.getCuentaUsuario();
     private String nombreSala = "Sala 1";
@@ -56,6 +64,10 @@ public class Pantalla4 {
     @FXML private TextArea Texto_Combate;
     @FXML private Label labelCD;
 
+    /**
+     * Método que se ejecuta al inicializar la pantalla.
+     * Carga al enemigo y al personaje, configura la interfaz gráfica y asigna acciones a los botones.
+     */
     @FXML
     public void initialize() {
         seleccionarYcargarEnemigo();
@@ -82,6 +94,11 @@ public class Pantalla4 {
         actualizarLabelCD();
     }
 
+    /**
+     * Carga las estadísticas base del enemigo seleccionado.
+     *
+     * @param original El enemigo del que se copiarán las estadísticas.
+     */
     public void cargarEstadisticasEnemigo(Enemigo original) {
         this.ataquetotalE = original.getAtaqueE();
         this.defensatotalE = original.getDefensaE();
@@ -90,6 +107,9 @@ public class Pantalla4 {
         this.puntosCargaUltimateE = original.getPuntosCargaUltimateE();
     }
 
+    /**
+     * Selecciona aleatoriamente un enemigo según la sala actual y lo carga.
+     */
     public void seleccionarYcargarEnemigo() {
         List<Enemigo> lista = null;
 
@@ -117,6 +137,9 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Carga y suma las estadísticas del personaje, arma y objeto seleccionados por el jugador.
+     */
     public void CargarPersonaje() {
         Cuenta cuenta = Pantalla1.getCuentaUsuario();
 
@@ -144,18 +167,31 @@ public class Pantalla4 {
         Armaequipada = arma != null ? arma.getNombre() : "Sin arma";
     }
 
+    /**
+     * Actualiza la etiqueta y la barra de vida del personaje en la interfaz.
+     *
+     * @param nuevaVida Nueva cantidad de vida del personaje.
+     */
     public void actualizarVidaPJ(int nuevaVida) {
         this.vidatotalPJ = Math.max(nuevaVida, 0);
         labelVidaPJ.setText("VIDA: " + vidatotalPJ + "/" + vidaMaximaPJ);
         barraVidaPJ.setProgress((double) vidatotalPJ / vidaMaximaPJ);
     }
 
+    /**
+     * Actualiza la etiqueta y la barra de vida del enemigo en la interfaz.
+     *
+     * @param nuevaVida Nueva cantidad de vida del enemigo.
+     */
     public void actualizarVidaEnemigo(int nuevaVida) {
         this.vidatotalE = Math.max(nuevaVida, 0);
         labelVidaEnemigo.setText("VIDA: " + vidatotalE + "/" + vidaMaximaE);
         barraVidaEnemigo.setProgress((double) vidatotalE / vidaMaximaE);
     }
 
+    /**
+     * Cambia la imagen de fondo según la sala actual.
+     */
     public void actualizarFondoSala() {
         String nombreImagen;
         switch (nombreSala) {
@@ -183,6 +219,9 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Reinicia los datos del combate entre salas, como los turnos y los cooldowns.
+     */
     public void ReiniciarDatosSalas() {
         turnosCombate = 1;
         CDHabilidadElementalPJ = 0;
@@ -194,6 +233,9 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Establece la imagen del personaje jugador en la interfaz.
+     */
     public void seleccionarImagenPJ(){
         try {
             ImagenPJ.setImage(new javafx.scene.image.Image(
@@ -203,6 +245,9 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Establece la imagen del enemigo actual en la interfaz.
+     */
     public void seleccionarImagenEnemigo() {
         try {
             String nombreEnemigo = enemigoactual.getNombreE();
@@ -214,6 +259,12 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Comprueba el estado del combate para saber si ha terminado.
+     *
+     * @return "victoria" si el enemigo fue derrotado, "derrota" si el jugador fue derrotado,
+     *         o "combate" si sigue activo.
+     */
     public String comprobarEstadoCombate() {
         if (vidatotalE <= 0) {
             return "victoria";
@@ -223,6 +274,11 @@ public class Pantalla4 {
         return "combate";
     }
 
+    /**
+     * Calcula y otorga la recompensa basada en el resultado del combate.
+     *
+     * @param resultadoCombate El resultado del combate ("victoria" o "derrota").
+     */
     private void gestionarRecompensa(String resultadoCombate) {
         Random rand = new Random();
         if (resultadoCombate.equals("victoria")) {
@@ -258,6 +314,11 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Gestiona el flujo tras finalizar el combate y realiza la transición de pantalla si es necesario.
+     *
+     * @param event Evento de acción para identificar el origen de la llamada.
+     */
     public void gestionarResultadoCombate(javafx.event.ActionEvent event) {
         String resultado = comprobarEstadoCombate();
         gestionarRecompensa(resultado);
@@ -328,6 +389,10 @@ public class Pantalla4 {
 
     private boolean enemigoEnTurno = false;
 
+    /**
+     * Actualiza el turno en la interfaz, determina si es el turno del jugador o del enemigo,
+     * y activa la lógica correspondiente.
+     */
     private void actualizarTurno() {
         labelTurnoActual.setText("Turno actual: " + turnosCombate);
 
@@ -347,6 +412,9 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Ejecuta el turno del enemigo, elige un ataque y lo aplica después de una pausa.
+     */
     private void turnoEnemigo() {
         Texto_Combate.appendText("TURNO " + turnosCombate + "\n");
         Texto_Combate.appendText("ES TURNO DEL ENEMIGO...\n");
@@ -402,6 +470,12 @@ public class Pantalla4 {
         pausa1.play();
     }
 
+    /**
+     * Ejecuta la lógica del ataque básico del personaje jugador.
+     * Calcula el daño, actualiza la vida del enemigo, registra la acción y gestiona el turno y estado del combate.
+     *
+     * @param event El evento de acción que desencadena este ataque.
+     */
     private void eventoAtaqueBasico(ActionEvent event) {
         Cuenta cuenta = Pantalla1.getCuentaUsuario();
         Personaje personaje = cuenta.getPersonaje();
@@ -430,6 +504,13 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Ejecuta la habilidad elemental del personaje jugador, si no está en tiempo de espera.
+     * Aplica daño al enemigo, actualiza la interfaz, registra la acción y gestiona el turno y el estado del combate.
+     * Si la habilidad aún está en cooldown, muestra un mensaje en el registro de combate.
+     *
+     * @param event El evento de acción que desencadena esta habilidad.
+     */
     private void eventoHabilidadElemental(ActionEvent event) {
         Cuenta cuenta = Pantalla1.getCuentaUsuario();
         Personaje personaje = cuenta.getPersonaje();
@@ -461,6 +542,13 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Ejecuta el ataque especial "Ultimate" del personaje jugador, si ha acumulado suficientes puntos de carga.
+     * Reinicia los puntos de carga tras el uso, actualiza la interfaz, registra la acción y verifica el estado del combate.
+     * Si no se ha alcanzado el número necesario de puntos de carga, muestra un mensaje al jugador.
+     *
+     * @param event El evento de acción que desencadena el uso de la ultimate.
+     */
     private void eventoUltimatePJ(ActionEvent event) {
         Cuenta cuenta = Pantalla1.getCuentaUsuario();
         Personaje personaje = cuenta.getPersonaje();
@@ -490,6 +578,12 @@ public class Pantalla4 {
         }
     }
 
+    /**
+     * Permite al jugador salir de la mazmorra antes de terminarla.
+     * Muestra una ventana de confirmación y, si se acepta, cambia la escena a la pantalla inicial.
+     *
+     * @param event El evento de acción que desencadena esta salida.
+     */
     @FXML
     private void salirDeMazmorra(ActionEvent event) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
@@ -513,6 +607,10 @@ public class Pantalla4 {
         });
     }
 
+    /**
+     * Actualiza la etiqueta que muestra los puntos de carga de la ultimate del personaje.
+     * Limita el máximo de puntos de carga a 3.
+     */
     private void actualizarLabelPuntosUltimatePJ() {
         if (puntosCargaUltimatePJ > 3) {
             puntosCargaUltimatePJ = 3;
@@ -520,6 +618,10 @@ public class Pantalla4 {
         labelpuntosultimate.setText("PUNTOS ACTUALES: " + puntosCargaUltimatePJ + "/3");
     }
 
+    /**
+     * Actualiza la etiqueta que indica el cooldown (tiempo de espera) restante para volver a usar la habilidad elemental.
+     * Limita el valor máximo del cooldown a 2 turnos.
+     */
     private void actualizarLabelCD(){
         if (CDHabilidadElementalPJ > 2){
             CDHabilidadElementalPJ = 2;
@@ -527,6 +629,14 @@ public class Pantalla4 {
         labelCD.setText("TIEMPO ESPERA: " + CDHabilidadElementalPJ + "/2 TURNOS");
     }
 
+    /**
+     * Registra una acción en el área de texto del combate.
+     * Muestra el tipo de ataque realizado, el nombre del atacante y el daño causado.
+     *
+     * @param nombreAtacante Nombre del personaje que ha realizado el ataque.
+     * @param tipoAtaque Tipo de ataque usado (por ejemplo: "ataque básico", "habilidad elemental", "ultimate").
+     * @param danhoRealizado Daño total infligido al enemigo.
+     */
     public void registrarAccionCombate(String nombreAtacante, String tipoAtaque, int danhoRealizado) {
         String mensaje = nombreAtacante + " ha usado " + tipoAtaque + " y ha hecho " + danhoRealizado + " de daño.\n";
         Texto_Combate.appendText(mensaje);
